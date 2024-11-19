@@ -41,7 +41,7 @@ namespace NeonProject
             this.trackBarThreads = new System.Windows.Forms.TrackBar();
             this.threadLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.timeLabel = new System.Windows.Forms.Label();
             this.pictureBoxNeon = new System.Windows.Forms.PictureBox();
             this.pictureBoxOriginal = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -116,20 +116,20 @@ namespace NeonProject
             // 
             this.flowLayoutPanel2.Controls.Add(this.threadLabel);
             this.flowLayoutPanel2.Controls.Add(this.trackBarThreads);
-            this.flowLayoutPanel2.Controls.Add(this.label1);
+            this.flowLayoutPanel2.Controls.Add(this.timeLabel);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(471, 417);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(287, 113);
             this.flowLayoutPanel2.TabIndex = 3;
             // 
-            // label1
+            // timeLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 64);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
+            this.timeLabel.AutoSize = true;
+            this.timeLabel.Location = new System.Drawing.Point(3, 64);
+            this.timeLabel.Name = "timeLabel";
+            this.timeLabel.Size = new System.Drawing.Size(33, 13);
+            this.timeLabel.TabIndex = 3;
+            this.timeLabel.Text = "Time:";
             // 
             // pictureBoxNeon
             // 
@@ -219,7 +219,7 @@ namespace NeonProject
         private System.Windows.Forms.TrackBar trackBarThreads;
         private System.Windows.Forms.Label threadLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label timeLabel;
         private System.Windows.Forms.PictureBox pictureBoxNeon;
         private System.Windows.Forms.PictureBox pictureBoxOriginal;
         private System.Windows.Forms.Label label2;
