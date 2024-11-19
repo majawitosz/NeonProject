@@ -32,7 +32,6 @@ namespace NeonProject
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -47,6 +46,7 @@ namespace NeonProject
             this.pictureBoxOriginal = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.labelOriginal = new System.Windows.Forms.Label();
+            this.applyNeon = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chosenImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarThreads)).BeginInit();
@@ -54,16 +54,6 @@ namespace NeonProject
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxNeon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOriginal)).BeginInit();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(15, 388);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // openFileDialog1
             // 
@@ -146,6 +136,7 @@ namespace NeonProject
             this.pictureBoxNeon.Location = new System.Drawing.Point(406, 48);
             this.pictureBoxNeon.Name = "pictureBoxNeon";
             this.pictureBoxNeon.Size = new System.Drawing.Size(352, 307);
+            this.pictureBoxNeon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxNeon.TabIndex = 4;
             this.pictureBoxNeon.TabStop = false;
             // 
@@ -179,23 +170,32 @@ namespace NeonProject
             this.labelOriginal.TabIndex = 7;
             this.labelOriginal.Text = "ORIGINAL";
             // 
+            // applyNeon
+            // 
+            this.applyNeon.Location = new System.Drawing.Point(338, 433);
+            this.applyNeon.Name = "applyNeon";
+            this.applyNeon.Size = new System.Drawing.Size(75, 23);
+            this.applyNeon.TabIndex = 8;
+            this.applyNeon.Text = "Convert";
+            this.applyNeon.UseVisualStyleBackColor = true;
+            this.applyNeon.Click += new System.EventHandler(this.applyNeon_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(784, 661);
+            this.Controls.Add(this.applyNeon);
             this.Controls.Add(this.labelOriginal);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.pictureBoxOriginal);
             this.Controls.Add(this.pictureBoxNeon);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "NeonApp";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chosenImage)).EndInit();
@@ -210,8 +210,6 @@ namespace NeonProject
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
@@ -226,6 +224,7 @@ namespace NeonProject
         private System.Windows.Forms.PictureBox pictureBoxOriginal;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelOriginal;
+        private Button applyNeon;
     }
 }
 

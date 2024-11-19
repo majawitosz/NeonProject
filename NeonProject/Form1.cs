@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NeonProject
 {
-    public partial class Form1 : Form
+    public unsafe partial class Form1 : Form
     {
         [DllImport(@"C:\Users\Maja\Documents\Studia\JA\ProjektWindowsForms\NeonProject\x64\Debug\Asm.dll")]
         static extern int MyProc1(int a, int b);
@@ -25,25 +27,8 @@ namespace NeonProject
         {
             // Set dynamic Maximum value
             trackBarThreads.Maximum = threadOptions.Length - 1;
-
             // Initialize label with default value
             threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
-        }
-
-
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            int x = 5, y = 3;
-            int retVal = MyProc1(x, y);
-
-            // Create or update label to show result
-            Label resultLabel = new Label();
-            resultLabel.Text = $"Moja pierwsza wartość obliczona w asm to: {retVal}";
-            resultLabel.AutoSize = true;
-            resultLabel.Location = new Point(10, 50);
-            this.Controls.Add(resultLabel);
-
         }
 
         private void chooseImage_Click(object sender, EventArgs e)
@@ -92,11 +77,10 @@ namespace NeonProject
             threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void applyNeon_Click(object sender, EventArgs e)
         {
-
+           
         }
-
        
     }
 }
