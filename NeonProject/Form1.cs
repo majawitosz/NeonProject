@@ -17,9 +17,11 @@ namespace NeonProject
     public unsafe partial class Form1 : Form
     {
         [DllImport(@"C:\Users\Maja\Documents\Studia\JA\ProjektWindowsForms\NeonProject\x64\Debug\Asm.dll")]
-        static extern int MyProc1(int a, int b);
+        static extern int MyProc1(byte* inputPixels,
+        byte* outputPixels,
+        int length);
         private int[] threadOptions = { 1, 2, 4, 8, 16, 32, 64 };
-        private Bitmap original, edges, result;
+        //private Bitmap original, edges, result;
         public Form1()
         {
             InitializeComponent();
@@ -78,49 +80,7 @@ namespace NeonProject
         {
             threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
         }
-        private void ProcessImageSection(object parameters)
-        {
-            var (startY, endY, original, edges, result) = ((int, int, BitmapData, BitmapData, BitmapData))parameters;
 
-            int bytesPerPixel = 4;
-            int stride = original.Stride;
-
-            byte* originalPtr = (byte*)original.Scan0;
-            byte* edgesPtr = (byte*)edges.Scan0;
-
-            for (int y = startY; y < endY; y++)
-            {
-                if (y < 1 || y >= original.Height - 1) continue;
-
-                for (int x = 1; x < original.Width - 1; x++)
-                {
-                    int pos = y * stride + x * bytesPerPixel;
-                    int rightPos = y * stride + (x + 1) * bytesPerPixel;
-                    int bottomPos = (y + 1) * stride + x * bytesPerPixel;
-                    int diagPos = (y + 1) * stride + (x + 1) * bytesPerPixel;
-
-                    int diffH = Math.Abs(originalPtr[pos + 2] - originalPtr[rightPos + 2]) +
-                               Math.Abs(originalPtr[pos + 1] - originalPtr[rightPos + 1]) +
-                               Math.Abs(originalPtr[pos] - originalPtr[rightPos]);
-
-                    int diffV = Math.Abs(originalPtr[pos + 2] - originalPtr[bottomPos + 2]) +
-                               Math.Abs(originalPtr[pos + 1] - originalPtr[bottomPos + 1]) +
-                               Math.Abs(originalPtr[pos] - originalPtr[bottomPos]);
-
-                    int diffD = Math.Abs(originalPtr[pos + 2] - originalPtr[diagPos + 2]) +
-                               Math.Abs(originalPtr[pos + 1] - originalPtr[diagPos + 1]) +
-                               Math.Abs(originalPtr[pos] - originalPtr[diagPos]);
-
-                    int maxDiff = Math.Max(Math.Max(diffH, diffV), diffD);
-                    int edgeValue = MyProc1(maxDiff, 0);
-
-                    edgesPtr[pos] = (byte)edgeValue;
-                    edgesPtr[pos + 1] = (byte)edgeValue;
-                    edgesPtr[pos + 2] = (byte)edgeValue;
-                    edgesPtr[pos + 3] = 255;
-                }
-            }
-        }
 
         private void applyNeon_Click(object sender, EventArgs e)
         {
@@ -135,51 +95,68 @@ namespace NeonProject
 
             Bitmap original = new Bitmap(pictureBoxOriginal.Image);
             Bitmap edges = new Bitmap(original.Width, original.Height);
-            Bitmap result = new Bitmap(original.Width, original.Height);
+            //Bitmap result = new Bitmap(original.Width, original.Height);
 
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.DrawImage(original, 0, 0);
-            }
+            //using (Graphics g = Graphics.FromImage(edges))
+            //{
+            //    g.DrawImage(original, 0, 0);
+            //}
 
-            int threadCount = threadOptions[trackBarThreads.Value];
-            int heightPerThread = original.Height / threadCount;
+            
 
             BitmapData originalData = original.LockBits(new Rectangle(0, 0, original.Width, original.Height),
                 ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             BitmapData edgesData = edges.LockBits(new Rectangle(0, 0, edges.Width, edges.Height),
                 ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            BitmapData resultData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height),
-                ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            //BitmapData resultData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height),
+            //    ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 
-            Thread[] threads = new Thread[threadCount];
 
-            for (int i = 0; i < threadCount; i++)
+            try
             {
-                int startY = i * heightPerThread;
-                int endY = (i == threadCount - 1) ? original.Height : (i + 1) * heightPerThread;
+                byte* ptrOrig = (byte*)originalData.Scan0.ToPointer();
+                Console.WriteLine("Input pixels:");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.WriteLine($"Pixel {i}: {ptrOrig[i * 4]}, {ptrOrig[i * 4 + 1]}, {ptrOrig[i * 4 + 2]}, {ptrOrig[i * 4 + 3]}");
+                }
 
-                threads[i] = new Thread(ProcessImageSection);
-                threads[i].Start((startY, endY, originalData, edgesData, resultData));
+                int totalPixels = original.Width * original.Height;
+                //int stride = originalData.Stride;  // Rzeczywista szerokość linii w bajtach
+                // Wywołanie funkcji asemblerowej
+                MyProc1(
+                    (byte*)originalData.Scan0.ToPointer(),
+                    (byte*)edgesData.Scan0.ToPointer(),
+                    totalPixels -1); // liczba pikseli
+
+                byte* ptrEdges = (byte*)edgesData.Scan0.ToPointer();
+                Console.WriteLine("Output pixels:");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.WriteLine($"Pixel {i}: {ptrEdges[i * 4]}, {ptrEdges[i * 4 + 1]}, {ptrEdges[i * 4 + 2]}, {ptrEdges[i * 4 + 3]}");
+                }
             }
-
-            foreach (Thread thread in threads)
+            finally
             {
-                thread.Join();
+                // Odblokowujemy bitmapy
+                original.UnlockBits(originalData);
+                edges.UnlockBits(edgesData);
             }
-
-            original.UnlockBits(originalData);
-            edges.UnlockBits(edgesData);
-            result.UnlockBits(resultData);
 
             // Apply glow effect (can be similarly optimized if needed)
-            ApplyGlowEffect(edges, result);
+            //ApplyGlowEffect(edges, result);
 
             stopwatch.Stop();
             timeLabel.Text = $"Processing time: {stopwatch.ElapsedMilliseconds}ms using {threadOptions[trackBarThreads.Value]} threads";
 
-            pictureBoxNeon.Image?.Dispose();
-            pictureBoxNeon.Image = result;
+            if (pictureBoxNeon.Image != null)
+            {
+                pictureBoxNeon.Image.Dispose();
+            }
+            pictureBoxNeon.Image = edges;
+            
+
+            original.Dispose();
         }
 
         private void ApplyGlowEffect(Bitmap edges, Bitmap result)
@@ -189,7 +166,7 @@ namespace NeonProject
                 for (int x = 2; x < edges.Width - 2; x++)
                 {
                     Color edgePixel = edges.GetPixel(x, y);
-                    if (edgePixel.R > 80)
+                    if (edgePixel.R > 30)
                     {
                         result.SetPixel(x, y, Color.White);
 
