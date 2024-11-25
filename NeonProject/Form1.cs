@@ -21,19 +21,21 @@ namespace NeonProject
         byte* outputPixels,
         int length);
         private int[] threadOptions = { 1, 2, 4, 8, 16, 32, 64 };
-        private int numberOfThreadsTests = 1; 
-        //private Bitmap original, edges, result;
+        private int defaultThreads;
+    
+    
         public Form1()
         {
             InitializeComponent();
+            defaultThreads = Environment.ProcessorCount;
+            threadOptions = threadOptions.Append(defaultThreads).OrderBy(x => x).Distinct().ToArray();
             InitializeTrackBar();
         }
         private void InitializeTrackBar()
-        {
-            // Set dynamic Maximum value
-            trackBarThreads.Maximum = threadOptions.Length - 1;
-            // Initialize label with default value
-           threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
+        { 
+           trackBarThreads.Maximum = threadOptions.Length - 1;
+            trackBarThreads.Value = Array.IndexOf(threadOptions, defaultThreads);
+            threadLabel.Text = $"Number of Threads: {defaultThreads}";
         }
 
         private void chooseImage_Click(object sender, EventArgs e)
@@ -80,8 +82,15 @@ namespace NeonProject
         private void trackBarThreads_Scroll(object sender, EventArgs e)
         {
             threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
+           // numberOfThreadsTests = threadOptions[trackBarThreads.Value];
+            defaultThreads = threadOptions[trackBarThreads.Value];
 
-
+        }
+        private void restoreDefault_Click(object sender, EventArgs e)
+        {
+            defaultThreads = Environment.ProcessorCount;
+            trackBarThreads.Value = Array.IndexOf(threadOptions, defaultThreads);
+            threadLabel.Text = $"Number of Threads: {defaultThreads}";
         }
 
         // Create a struct to hold the parameters
@@ -140,15 +149,15 @@ namespace NeonProject
                 byte* ptrEdges = (byte*)edgesData.Scan0.ToPointer();
 
                 int totalPixels = original.Width * original.Height;
-                int pixelsPerThread = totalPixels / numberOfThreadsTests;
+                int pixelsPerThread = totalPixels / defaultThreads;
 
                 // Create and start threads
                 var threads = new List<Thread>();
 
-                for (int i = 0; i < numberOfThreadsTests; i++)
+                for (int i = 0; i < defaultThreads; i++)
                 {
                     int startPixel = i * pixelsPerThread;
-                    int endPixel = (i == numberOfThreadsTests - 1) ? totalPixels : (i + 1) * pixelsPerThread;
+                    int endPixel = (i == defaultThreads - 1) ? totalPixels : (i + 1) * pixelsPerThread;
 
                     var parameters = new ThreadParameters(startPixel, endPixel, ptrOrig, ptrEdges);
                     var thread = new Thread(ProcessImageSegment);
@@ -243,7 +252,7 @@ namespace NeonProject
             for (int i=0; i< threadOptions.Length; i++)
             {
                 Label currentLabel = this.Controls.Find($"t{threadOptions[i]}Asm", true).FirstOrDefault() as Label;
-                numberOfThreadsTests = threadOptions[i];
+                int numberOfThreadsTests = threadOptions[i];
                 long totalTime = 0;
                 for (int j=0; j < 10; j++)
                 {
@@ -264,5 +273,7 @@ namespace NeonProject
                 currentLabel.Text = $"{threadOptions[i]} threads: {averageTime:F2}ms";
             }
         }
+
+       
     }
 }

@@ -55,6 +55,7 @@ namespace NeonProject
             this.t32Asm = new System.Windows.Forms.Label();
             this.t64Asm = new System.Windows.Forms.Label();
             this.TestsButton = new System.Windows.Forms.Button();
+            this.restoreDefault = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chosenImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarThreads)).BeginInit();
@@ -125,9 +126,9 @@ namespace NeonProject
             this.flowLayoutPanel2.Controls.Add(this.threadLabel);
             this.flowLayoutPanel2.Controls.Add(this.trackBarThreads);
             this.flowLayoutPanel2.Controls.Add(this.timeLabel);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(471, 417);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(471, 408);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(287, 113);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(287, 122);
             this.flowLayoutPanel2.TabIndex = 3;
             // 
             // timeLabel
@@ -261,12 +262,23 @@ namespace NeonProject
             this.TestsButton.UseVisualStyleBackColor = true;
             this.TestsButton.Click += new System.EventHandler(this.TestsButton_Click);
             // 
+            // restoreDefault
+            // 
+            this.restoreDefault.Location = new System.Drawing.Point(471, 379);
+            this.restoreDefault.Name = "restoreDefault";
+            this.restoreDefault.Size = new System.Drawing.Size(124, 23);
+            this.restoreDefault.TabIndex = 17;
+            this.restoreDefault.Text = "Restore Default";
+            this.restoreDefault.UseVisualStyleBackColor = true;
+            this.restoreDefault.Click += new System.EventHandler(this.restoreDefault_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(784, 661);
+            this.Controls.Add(this.restoreDefault);
             this.Controls.Add(this.TestsButton);
             this.Controls.Add(this.t64Asm);
             this.Controls.Add(this.t32Asm);
@@ -322,6 +334,7 @@ namespace NeonProject
         private Label t32Asm;
         private Label t64Asm;
         private Button TestsButton;
+        private Button restoreDefault;
     }
 }
 
