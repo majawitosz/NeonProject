@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonProject", "NeonProject\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Asm", "Asm\Asm.vcxproj", "{723466B1-5461-49F6-965D-D37D869EB0C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp", "C#\CSharp.csproj", "{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,18 @@ Global
 		{723466B1-5461-49F6-965D-D37D869EB0C3}.Release|x64.Build.0 = Release|x64
 		{723466B1-5461-49F6-965D-D37D869EB0C3}.Release|x86.ActiveCfg = Release|Win32
 		{723466B1-5461-49F6-965D-D37D869EB0C3}.Release|x86.Build.0 = Release|Win32
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Debug|x86.Build.0 = Debug|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|x64.Build.0 = Release|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C101BCD-8D0D-4E19-A2D7-0CD5AA323991}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

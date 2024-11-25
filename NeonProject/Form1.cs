@@ -21,6 +21,7 @@ namespace NeonProject
         byte* outputPixels,
         int length);
         private int[] threadOptions = { 1, 2, 4, 8, 16, 32, 64 };
+        private int numberOfThreadsTests = 1; 
         //private Bitmap original, edges, result;
         public Form1()
         {
@@ -32,7 +33,7 @@ namespace NeonProject
             // Set dynamic Maximum value
             trackBarThreads.Maximum = threadOptions.Length - 1;
             // Initialize label with default value
-            threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
+           threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
         }
 
         private void chooseImage_Click(object sender, EventArgs e)
@@ -79,10 +80,37 @@ namespace NeonProject
         private void trackBarThreads_Scroll(object sender, EventArgs e)
         {
             threadLabel.Text = $"Number of Threads: {threadOptions[trackBarThreads.Value]}";
+
+
         }
 
+        // Create a struct to hold the parameters
+        private unsafe struct ThreadParameters
+        {
+            public int StartPixel;
+            public int EndPixel;
+            public byte* OriginalPtr;
+            public byte* EdgesPtr;
 
-        private void applyNeon_Click(object sender, EventArgs e)
+            public ThreadParameters(int start, int end, byte* original, byte* edges)
+            {
+                StartPixel = start;
+                EndPixel = end;
+                OriginalPtr = original;
+                EdgesPtr = edges;
+            }
+        }
+
+        private unsafe void ProcessImageSegment(object parameters)
+        {
+            var threadParams = (ThreadParameters)parameters;
+            MyProc1(
+                threadParams.OriginalPtr + (threadParams.StartPixel * 4),
+                threadParams.EdgesPtr + (threadParams.StartPixel * 4),
+                threadParams.EndPixel - threadParams.StartPixel);
+        }
+
+        private unsafe void applyNeon_Click(object sender, EventArgs e)
         {
             if (pictureBoxOriginal.Image == null)
             {
@@ -95,41 +123,46 @@ namespace NeonProject
 
             Bitmap original = new Bitmap(pictureBoxOriginal.Image);
             Bitmap edges = new Bitmap(original.Width, original.Height);
-            //Bitmap result = new Bitmap(original.Width, original.Height);
 
-            //using (Graphics g = Graphics.FromImage(edges))
-            //{
-            //    g.DrawImage(original, 0, 0);
-            //}
+            BitmapData originalData = original.LockBits(
+                new Rectangle(0, 0, original.Width, original.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb);
 
-            
-
-            BitmapData originalData = original.LockBits(new Rectangle(0, 0, original.Width, original.Height),
-                ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData edgesData = edges.LockBits(new Rectangle(0, 0, edges.Width, edges.Height),
-                ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            //BitmapData resultData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height),
-            //    ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-
+            BitmapData edgesData = edges.LockBits(
+                new Rectangle(0, 0, edges.Width, edges.Height),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppArgb);
 
             try
             {
                 byte* ptrOrig = (byte*)originalData.Scan0.ToPointer();
-                Console.WriteLine("Input pixels:");
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.WriteLine($"Pixel {i}: {ptrOrig[i * 4]}, {ptrOrig[i * 4 + 1]}, {ptrOrig[i * 4 + 2]}, {ptrOrig[i * 4 + 3]}");
-                }
+                byte* ptrEdges = (byte*)edgesData.Scan0.ToPointer();
 
                 int totalPixels = original.Width * original.Height;
-                //int stride = originalData.Stride;  // Rzeczywista szerokość linii w bajtach
-                // Wywołanie funkcji asemblerowej
-                MyProc1(
-                    (byte*)originalData.Scan0.ToPointer(),
-                    (byte*)edgesData.Scan0.ToPointer(),
-                    totalPixels -1); // liczba pikseli
+                int pixelsPerThread = totalPixels / numberOfThreadsTests;
 
-                byte* ptrEdges = (byte*)edgesData.Scan0.ToPointer();
+                // Create and start threads
+                var threads = new List<Thread>();
+
+                for (int i = 0; i < numberOfThreadsTests; i++)
+                {
+                    int startPixel = i * pixelsPerThread;
+                    int endPixel = (i == numberOfThreadsTests - 1) ? totalPixels : (i + 1) * pixelsPerThread;
+
+                    var parameters = new ThreadParameters(startPixel, endPixel, ptrOrig, ptrEdges);
+                    var thread = new Thread(ProcessImageSegment);
+                    threads.Add(thread);
+                    thread.Start(parameters);
+                }
+
+                // Wait for all threads to complete
+                foreach (var thread in threads)
+                {
+                    thread.Join();
+                }
+
+                // Debug output for first few pixels
                 Console.WriteLine("Output pixels:");
                 for (int i = 0; i < 4; i++)
                 {
@@ -138,13 +171,9 @@ namespace NeonProject
             }
             finally
             {
-                // Odblokowujemy bitmapy
                 original.UnlockBits(originalData);
                 edges.UnlockBits(edgesData);
             }
-
-            // Apply glow effect (can be similarly optimized if needed)
-            //ApplyGlowEffect(edges, result);
 
             stopwatch.Stop();
             timeLabel.Text = $"Processing time: {stopwatch.ElapsedMilliseconds}ms using {threadOptions[trackBarThreads.Value]} threads";
@@ -154,10 +183,14 @@ namespace NeonProject
                 pictureBoxNeon.Image.Dispose();
             }
             pictureBoxNeon.Image = edges;
-            
-
             original.Dispose();
         }
+
+        // Add this method to update the number of threads
+        //public void SetNumberOfThreads(int threads)
+        //{
+        //    numberOfThreads = Math.Max(1, Math.Min(threads, Environment.ProcessorCount));
+        //}
 
         private void ApplyGlowEffect(Bitmap edges, Bitmap result)
         {
@@ -199,5 +232,37 @@ namespace NeonProject
             }
         }
 
+        private void TestsButton_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxOriginal.Image == null)
+            {
+                MessageBox.Show("Please select an image first.");
+                return;
+            }
+            double[] averageTimes = new double[threadOptions.Length];
+            for (int i=0; i< threadOptions.Length; i++)
+            {
+                Label currentLabel = this.Controls.Find($"t{threadOptions[i]}Asm", true).FirstOrDefault() as Label;
+                numberOfThreadsTests = threadOptions[i];
+                long totalTime = 0;
+                for (int j=0; j < 10; j++)
+                {
+
+                   
+                    var stopwatch = new System.Diagnostics.Stopwatch();
+                    stopwatch.Start();
+
+                    applyNeon_Click(null, null);
+
+                    stopwatch.Stop();
+                    totalTime += stopwatch.ElapsedMilliseconds;
+
+                    Application.DoEvents();
+                }
+                double averageTime = totalTime / 10.0;
+                averageTimes[i] = averageTime;
+                currentLabel.Text = $"{threadOptions[i]} threads: {averageTime:F2}ms";
+            }
+        }
     }
 }

@@ -47,6 +47,14 @@ namespace NeonProject
             this.label2 = new System.Windows.Forms.Label();
             this.labelOriginal = new System.Windows.Forms.Label();
             this.applyNeon = new System.Windows.Forms.Button();
+            this.t1Asm = new System.Windows.Forms.Label();
+            this.t2Asm = new System.Windows.Forms.Label();
+            this.t4Asm = new System.Windows.Forms.Label();
+            this.t8Asm = new System.Windows.Forms.Label();
+            this.t16Asm = new System.Windows.Forms.Label();
+            this.t32Asm = new System.Windows.Forms.Label();
+            this.t64Asm = new System.Windows.Forms.Label();
+            this.TestsButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chosenImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarThreads)).BeginInit();
@@ -180,12 +188,93 @@ namespace NeonProject
             this.applyNeon.UseVisualStyleBackColor = true;
             this.applyNeon.Click += new System.EventHandler(this.applyNeon_Click);
             // 
+            // t1Asm
+            // 
+            this.t1Asm.AutoSize = true;
+            this.t1Asm.Location = new System.Drawing.Point(335, 506);
+            this.t1Asm.Name = "t1Asm";
+            this.t1Asm.Size = new System.Drawing.Size(35, 13);
+            this.t1Asm.TabIndex = 9;
+            this.t1Asm.Text = "label1";
+            // 
+            // t2Asm
+            // 
+            this.t2Asm.AutoSize = true;
+            this.t2Asm.Location = new System.Drawing.Point(337, 519);
+            this.t2Asm.Name = "t2Asm";
+            this.t2Asm.Size = new System.Drawing.Size(35, 13);
+            this.t2Asm.TabIndex = 10;
+            this.t2Asm.Text = "label1";
+            // 
+            // t4Asm
+            // 
+            this.t4Asm.AutoSize = true;
+            this.t4Asm.Location = new System.Drawing.Point(337, 532);
+            this.t4Asm.Name = "t4Asm";
+            this.t4Asm.Size = new System.Drawing.Size(35, 13);
+            this.t4Asm.TabIndex = 11;
+            this.t4Asm.Text = "label1";
+            // 
+            // t8Asm
+            // 
+            this.t8Asm.AutoSize = true;
+            this.t8Asm.Location = new System.Drawing.Point(337, 545);
+            this.t8Asm.Name = "t8Asm";
+            this.t8Asm.Size = new System.Drawing.Size(35, 13);
+            this.t8Asm.TabIndex = 12;
+            this.t8Asm.Text = "label1";
+            // 
+            // t16Asm
+            // 
+            this.t16Asm.AutoSize = true;
+            this.t16Asm.Location = new System.Drawing.Point(335, 558);
+            this.t16Asm.Name = "t16Asm";
+            this.t16Asm.Size = new System.Drawing.Size(35, 13);
+            this.t16Asm.TabIndex = 13;
+            this.t16Asm.Text = "label1";
+            // 
+            // t32Asm
+            // 
+            this.t32Asm.AutoSize = true;
+            this.t32Asm.Location = new System.Drawing.Point(337, 571);
+            this.t32Asm.Name = "t32Asm";
+            this.t32Asm.Size = new System.Drawing.Size(35, 13);
+            this.t32Asm.TabIndex = 14;
+            this.t32Asm.Text = "label1";
+            // 
+            // t64Asm
+            // 
+            this.t64Asm.AutoSize = true;
+            this.t64Asm.Location = new System.Drawing.Point(337, 584);
+            this.t64Asm.Name = "t64Asm";
+            this.t64Asm.Size = new System.Drawing.Size(35, 13);
+            this.t64Asm.TabIndex = 15;
+            this.t64Asm.Text = "label1";
+            // 
+            // TestsButton
+            // 
+            this.TestsButton.Location = new System.Drawing.Point(340, 480);
+            this.TestsButton.Name = "TestsButton";
+            this.TestsButton.Size = new System.Drawing.Size(75, 23);
+            this.TestsButton.TabIndex = 16;
+            this.TestsButton.Text = "Run tests";
+            this.TestsButton.UseVisualStyleBackColor = true;
+            this.TestsButton.Click += new System.EventHandler(this.TestsButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(784, 661);
+            this.Controls.Add(this.TestsButton);
+            this.Controls.Add(this.t64Asm);
+            this.Controls.Add(this.t32Asm);
+            this.Controls.Add(this.t16Asm);
+            this.Controls.Add(this.t8Asm);
+            this.Controls.Add(this.t4Asm);
+            this.Controls.Add(this.t2Asm);
+            this.Controls.Add(this.t1Asm);
             this.Controls.Add(this.applyNeon);
             this.Controls.Add(this.labelOriginal);
             this.Controls.Add(this.label2);
@@ -225,6 +314,14 @@ namespace NeonProject
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelOriginal;
         private Button applyNeon;
+        private Label t1Asm;
+        private Label t2Asm;
+        private Label t4Asm;
+        private Label t8Asm;
+        private Label t16Asm;
+        private Label t32Asm;
+        private Label t64Asm;
+        private Button TestsButton;
     }
 }
 
